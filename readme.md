@@ -1,8 +1,22 @@
 # Logistik Analyse Projekt  
-Datenanalyse eines fiktiven Lagers mit Beständen, Wareneingängen, Warenausgängen und Umlagerungen
+Datenanalyse eines Produktionslagers mit Beständen, Wareneingängen, Warenausgängen und Umlagerungen
+
+## 🧩 Problemstellung
+
+Das Produktionslager eines mittelständischen Maschinenbauunternehmens hat wiederholt Schwierigkeiten mit Materialverfügbarkeit und unklaren Bestandsbewegungen. Einzelne Artikel laufen unerwartet knapp, während andere über Monate ungenutzt liegen. Die Produktionsplanung meldet regelmäßig Verzögerungen, weil kritische Teile nicht rechtzeitig verfügbar sind.
+
+Ziel der Analyse ist es:
+
+- Transparenz über Bestände, Ein‑ und Ausgänge sowie Umlagerungen zu schaffen  
+- zentrale Lager‑KPIs zu berechnen (Durchschnittsbestand, Lagerumschlag, Lagerdauer)  
+- Artikel zu identifizieren, die ein erhöhtes Engpassrisiko haben  
+- Muster und Auffälligkeiten im Materialfluss sichtbar zu machen  
+- eine Grundlage für bessere Dispositions‑ und Produktionsentscheidungen zu schaffen  
+
+---
 
 ## 📦 Projektüberblick  
-Dieses Projekt bildet ein vollständiges, realitätsnahes Lagerumfeld ab und zeigt, wie ein Data Analyst logistische Daten strukturiert analysiert, KPIs berechnet und Engpässe identifiziert.
+Dieses Projekt bildet ein vollständiges, realitätsnahes Produktionslager ab und zeigt, wie ein Data Analyst logistische Daten strukturiert analysiert, KPIs berechnet und Engpässe identifiziert.
 
 Das Projekt umfasst:
 
@@ -74,17 +88,37 @@ logistik_analyse_projekt/
 
 ---
 
-## 🎯 Ziel des Projekts
+## 📊 Analyse & Erkenntnisse
 
-Dieses Projekt zeigt typische Aufgaben eines Data Analysts im Logistikumfeld:
+Bei der Analyse der Bestands‑ und Bewegungsdaten habe ich zuerst geprüft, wie sich die Artikel über das Jahr hinweg verhalten. Dabei ist mir aufgefallen, dass es deutliche Unterschiede zwischen den Artikeln gibt: Einige haben einen sehr hohen Verbrauch und gleichzeitig relativ niedrige Bestände, während andere kaum bewegt werden.
 
-- Verständnis von Materialflüssen  
-- Berechnung zentraler Lager‑KPIs  
-- Identifikation kritischer Artikel  
-- Engpass‑Erkennung  
-- Visualisierung von Bestands‑ und Bewegungsdaten  
-- Entwicklung eines eigenen Engpass‑Scores  
-- Aufbau einer reproduzierbaren Analyse‑Pipeline  
+Über die KPI‑Berechnung konnte ich das genauer einordnen:
+
+- **Der Lagerumschlag** zeigt, welche Artikel regelmäßig verbraucht werden.  
+- **Der Durchschnittsbestand** zeigt, wie viel Material im Schnitt vorgehalten wird.  
+- **Die Lagerdauer** macht sichtbar, wie lange ein Artikel im Lager liegt, bevor er verbraucht wird.
+
+Durch die Kombination dieser KPIs konnte ich Artikel identifizieren, die ein erhöhtes Engpassrisiko haben. Das sind vor allem Artikel mit:
+
+- hohem Verbrauch  
+- gleichzeitig niedrigen Beständen  
+- und kurzer Lagerdauer  
+
+Um diese Artikel besser priorisieren zu können, habe ich einen **Engpass‑Score** entwickelt. Der Score hilft dabei, kritische Artikel schnell zu erkennen, ohne jede KPI einzeln betrachten zu müssen.
+
+Insgesamt zeigt die Analyse:
+
+- Es gibt mehrere Artikel, die regelmäßig an die Grenze der Verfügbarkeit kommen.  
+- Einige Warengruppen haben deutlich höhere Bewegungsraten als andere.  
+- Umlagerungen finden überwiegend bei Artikeln statt, die ohnehin kritisch sind — was auf organisatorische Engpässe hindeutet.  
+- Die Bestandsverteilung ist nicht optimal: Manche Artikel liegen lange, andere sind zu knapp disponiert.
+
+Daraus lassen sich konkrete Maßnahmen ableiten:
+
+- Sicherheitsbestände für kritische Artikel anpassen  
+- Dispositionsparameter überprüfen  
+- Umlagerungsprozesse standardisieren  
+- Artikel mit sehr langer Lagerdauer gezielt abbauen  
 
 ---
 
@@ -170,5 +204,5 @@ Die Diagramme erscheinen anschließend im Ordner `plots/`.
 
 ## 👤 Autor
 
-Jan‑Ivo  Oelfke
+Jan‑Ivo Oelfke
 Logistik‑Profi auf dem Weg zum Data Analyst
