@@ -13,9 +13,8 @@ Ziel der Analyse ist es:
 - Muster und Auffälligkeiten im Materialfluss sichtbar zu machen  
 - eine Grundlage für bessere Dispositions‑ und Produktionsentscheidungen zu schaffen  
 
----
-
 ## 📦 Projektüberblick  
+
 Dieses Projekt bildet ein vollständiges, realitätsnahes Produktionslager ab und zeigt, wie ein Data Analyst logistische Daten strukturiert analysiert, KPIs berechnet und Engpässe identifiziert.
 
 Das Projekt umfasst:
@@ -28,35 +27,34 @@ Das Projekt umfasst:
 - automatische Visualisierungen  
 - einen Engpass‑Score zur Priorisierung kritischer Artikel  
 
-Alle Daten sind synthetisch, aber realistisch modelliert.
+Das Lager verwendet ein strukturiertes 6‑stelliges Lagerplatzsystem (Gang–Regal–Ebene), z. B. A10302.
 
----
+Alle Daten sind synthetisch, aber realistisch modelliert.
 
 ## 📁 Projektstruktur
 
-logistik_analyse_projekt/
-│
-├── main.py                     # Hauptpipeline
-│
-├── data/                       # CSV-Daten
-│   ├── bestaende.csv
-│   ├── wareneingang.csv
-│   ├── warenausgang.csv
-│   └── umlagerungen.csv
-│
-├── plots/                      # Automatisch erzeugte Diagramme
-│
-├── src/
-│   ├── data_loading.py         # Daten laden & vorbereiten
-│   ├── kpi_berechnung.py       # KPI-Berechnung
-│   ├── engpass_score.py        # Engpass-Score & Top-Artikel
-│   └── visualisierung.py       # Diagramme erzeugen & speichern
-│
-└── eda/
-    ├── data_understanding.py   # Struktur- & Plausibilitätschecks
-    └── explorative_analyse.py  # Explorative Analysen
-
----
+logistik_analyse_projekt/  
+│  
+├── main.py                     – Hauptpipeline  
+│  
+├── data/                       – CSV‑Daten  
+│   ├── bestaende.csv  
+│   ├── wareneingang.csv  
+│   ├── warenausgang.csv  
+│   └── umlagerungen.csv  
+│  
+├── plots/                      – Automatisch erzeugte Diagramme  
+│  
+├── src/  
+│   ├── data_loading.py         – Daten laden & vorbereiten  
+│   ├── kpi_berechnung.py       – KPI‑Berechnung  
+│   ├── engpass_score.py        – Engpass‑Score & Top‑Artikel  
+│   ├── umlagerungen_analyse.py – Analyse der Umlagerungen  
+│   └── visualisierung.py       – Diagramme erzeugen & speichern  
+│  
+└── eda/  
+    ├── data_understanding.py   – Struktur‑ & Plausibilitätschecks  
+    └── explorative_analyse.py  – Explorative Analysen  
 
 ## 🗂️ Datensätze
 
@@ -82,11 +80,9 @@ logistik_analyse_projekt/
 - Datum  
 - Artikel  
 - Menge  
-- Von‑Platz  
-- Nach‑Platz  
+- Von‑Platz (6‑stelliger Lagerplatzcode: Gang–Regal–Ebene, z. B. A10302)  
+- Nach‑Platz (6‑stelliger Lagerplatzcode: Gang–Regal–Ebene, z. B. B21504)  
 - Grund  
-
----
 
 ## 📊 Analyse & Erkenntnisse
 
@@ -94,62 +90,70 @@ Bei der Analyse der Bestands‑ und Bewegungsdaten habe ich zuerst geprüft, wie
 
 Über die KPI‑Berechnung konnte ich das genauer einordnen:
 
-- **Der Lagerumschlag** zeigt, welche Artikel regelmäßig verbraucht werden.  
-- **Der Durchschnittsbestand** zeigt, wie viel Material im Schnitt vorgehalten wird.  
-- **Die Lagerdauer** macht sichtbar, wie lange ein Artikel im Lager liegt, bevor er verbraucht wird.
+- Lagerumschlag zeigt, welche Artikel regelmäßig verbraucht werden.  
+- Durchschnittsbestand zeigt, wie viel Material im Schnitt vorgehalten wird.  
+- Lagerdauer zeigt, wie lange ein Artikel im Lager liegt, bevor er verbraucht wird.
 
-Durch die Kombination dieser KPIs konnte ich Artikel identifizieren, die ein erhöhtes Engpassrisiko haben. Das sind vor allem Artikel mit:
+Durch die Kombination dieser KPIs konnte ich Artikel identifizieren, die ein erhöhtes Engpassrisiko haben – vor allem Artikel mit:
 
 - hohem Verbrauch  
-- gleichzeitig niedrigen Beständen  
-- und kurzer Lagerdauer  
+- niedrigen Beständen  
+- kurzer Lagerdauer  
 
-Um diese Artikel besser priorisieren zu können, habe ich einen **Engpass‑Score** entwickelt. Der Score hilft dabei, kritische Artikel schnell zu erkennen, ohne jede KPI einzeln betrachten zu müssen.
+Der entwickelte Engpass‑Score hilft, kritische Artikel schnell zu erkennen.
 
 Insgesamt zeigt die Analyse:
 
-- Es gibt mehrere Artikel, die regelmäßig an die Grenze der Verfügbarkeit kommen.  
+- Mehrere Artikel kommen regelmäßig an die Grenze der Verfügbarkeit.  
 - Einige Warengruppen haben deutlich höhere Bewegungsraten als andere.  
-- Umlagerungen finden überwiegend bei Artikeln statt, die ohnehin kritisch sind — was auf organisatorische Engpässe hindeutet.  
-- Die Bestandsverteilung ist nicht optimal: Manche Artikel liegen lange, andere sind zu knapp disponiert.
+- Die Bestandsverteilung ist nicht optimal.  
 
-Daraus lassen sich konkrete Maßnahmen ableiten:
+## 🔄 Analyse der Umlagerungen
 
-- Sicherheitsbestände für kritische Artikel anpassen  
-- Dispositionsparameter überprüfen  
-- Umlagerungsprozesse standardisieren  
-- Artikel mit sehr langer Lagerdauer gezielt abbauen  
+Die Umlagerungsdaten zeigen, wie häufig Artikel innerhalb des Lagers den Platz wechseln und welche Gründe dafür angegeben wurden.
 
----
+Das Lager verwendet ein strukturiertes 6‑stelliges Lagerplatzsystem (Gang–Regal–Ebene), z. B.:
+
+- A10302  
+- B21504  
+- C11201  
+
+Auffällig war:
+
+- Umlagerungen konzentrieren sich auf wenige Artikel  
+- Viele Umlagerungen betreffen ohnehin kritische Artikel  
+- Häufige Gründe:
+  - Kapazitätsausgleich  
+  - Kommissionierunterstützung  
+  - Qualitätsprüfung  
+  - Fehlplatzierungen  
+
+Daraus folgt:
+
+- Artikel mit vielen Umlagerungen sollten hinsichtlich Lagerplatz & Disposition überprüft werden  
+- Häufige Umlagerungen erhöhen das Risiko operativer Verzögerungen  
+- Eine bessere Platzstrategie könnte Umlagerungen reduzieren  
 
 ## 📈 Berechnete KPIs
 
-### Durchschnittsbestand
+### Durchschnittsbestand  
 Durchschnitt der monatlichen Endbestände.
 
-### Lagerumschlag
+### Lagerumschlag  
 Jahresverbrauch geteilt durch Durchschnittsbestand.
 
-### Lagerdauer
+### Lagerdauer  
 Durchschnittsbestand geteilt durch Tagesverbrauch.
 
----
-
 ## 🚨 Engpass‑Score (USP des Projekts)
-
-Ein eigens entwickelter Score zur Priorisierung kritischer Artikel:
 
 Engpass‑Score = Lagerumschlag / (Durchschnittsbestand + 1)
 
 Interpretation:
 
-- Hoher Score → kritisch  
-- Niedriger Score → unkritisch  
+- hoher Score → kritisch  
+- niedriger Score → unkritisch  
 - +1 verhindert Division durch 0  
-
-Damit lassen sich Engpässe frühzeitig erkennen.
-
----
 
 ## 📉 Visualisierungen
 
@@ -159,10 +163,10 @@ Automatisch erzeugte Diagramme:
 - Top‑Artikel nach Durchschnittsbestand  
 - Artikel mit niedrigster Lagerdauer  
 - Top‑Artikel nach Engpass‑Score  
+- Top‑Artikel nach Anzahl Umlagerungen  
+- Häufigste Umlagerungsgründe  
 
-Alle Diagramme werden im Ordner `plots/` gespeichert.
-
----
+Alle Diagramme werden im Ordner plots/ gespeichert.
 
 ## 🔧 Technische Umsetzung
 
@@ -171,7 +175,8 @@ Alle Diagramme werden im Ordner `plots/` gespeichert.
 2. KPIs berechnen  
 3. Engpass‑Score berechnen  
 4. Top‑Artikel ausgeben  
-5. Diagramme erzeugen  
+5. Umlagerungen analysieren  
+6. Diagramme erzeugen  
 
 ### Technologien
 - Python 3  
@@ -179,30 +184,22 @@ Alle Diagramme werden im Ordner `plots/` gespeichert.
 - seaborn  
 - matplotlib  
 
----
-
 ## ▶️ Ausführung
 
 Im Projektverzeichnis:
 
 python main.py
 
-Die Diagramme erscheinen anschließend im Ordner `plots/`.
-
----
-
 ## 🧠 Was dieses Projekt zeigt
 
-- Fähigkeit zur strukturierten Datenanalyse  
+- strukturierte Datenanalyse  
 - Verständnis logistischer KPIs  
-- Entwicklung eigener Metriken (Engpass‑Score)  
-- saubere Code‑Struktur & Modularisierung  
-- Visualisierung & Storytelling mit Daten  
-- realistische End‑to‑End‑Pipeline  
-
----
+- Entwicklung eigener Metriken  
+- Analyse organisatorischer Engpässe  
+- saubere Code‑Struktur  
+- Visualisierung & Storytelling  
 
 ## 👤 Autor
 
-Jan‑Ivo Oelfke
-Logistik‑Profi auf dem Weg zum Data Analyst
+Jan‑Ivo Oelfke  
+Fachkraft für Lagerlogistik auf dem Weg zum Data Analyst

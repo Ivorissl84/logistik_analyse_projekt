@@ -25,6 +25,9 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
     # ---------------------------------------------------------
     # 1. Monate vorbereiten
     # ---------------------------------------------------------
+    if "datum" not in wareneingang.columns or "datum" not in warenausgang.columns:
+        raise ValueError("wareneingang/warenausgang benötigen eine 'datum'-Spalte.")
+
     wareneingang["monat"] = wareneingang["datum"].dt.to_period("M")
     warenausgang["monat"] = warenausgang["datum"].dt.to_period("M")
 

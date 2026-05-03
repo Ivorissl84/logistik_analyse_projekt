@@ -27,13 +27,15 @@ def load_data():
 
     # --- 2. Datumsfelder konvertieren ---
     for df in [wareneingang, warenausgang, umlagerungen]:
-        df["datum"] = pd.to_datetime(df["datum"], format="%Y-%m-%d")
+        if "datum" in df.columns:
+            df["datum"] = pd.to_datetime(df["datum"], format="%Y-%m-%d")
 
     # --- 3. Spaltennamen vereinheitlichen ---
     for df in [bestaende, wareneingang, warenausgang, umlagerungen]:
         df.columns = df.columns.str.lower()
 
     # --- 4. Umlagerungen-Spalten anpassen ---
+    # Einheitliche Benennung wie im restlichen Projekt
     umlagerungen.rename(
         columns={
             "von_platz": "platz_von",
@@ -41,5 +43,11 @@ def load_data():
         },
         inplace=True,
     )
+
+    # Sicherstellen, dass alle erwarteten Spalten existieren
+    expected_cols = {"artikel", "menge", "datum", "platz_von", "platz_nach", "grund"}
+    missing = expected_cols - set(umlagerungen.columns)
+    if missing:
+        raise ValueError(f"Fehlende Spalten in umlagerungen.csv: {missing}")
 
     return bestaende, wareneingang, warenausgang, umlagerungen
