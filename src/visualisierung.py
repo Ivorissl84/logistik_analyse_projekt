@@ -5,6 +5,7 @@ import seaborn as sns
 # ---------------------------------------------------------
 # Globale Pfade
 # ---------------------------------------------------------
+# Basisverzeichnis des Projekts bestimmen
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PLOTS_DIR = os.path.join(BASE_DIR, "plots")
 os.makedirs(PLOTS_DIR, exist_ok=True)
@@ -12,7 +13,9 @@ os.makedirs(PLOTS_DIR, exist_ok=True)
 # ---------------------------------------------------------
 # Einheitlicher Stil für alle Diagramme
 # ---------------------------------------------------------
+# Konsistentes Layout für alle Visualisierungen
 sns.set_theme(style="whitegrid")
+
 plt.rcParams["figure.figsize"] = (12, 6)
 plt.rcParams["axes.titlesize"] = 16
 plt.rcParams["axes.labelsize"] = 13
@@ -26,6 +29,11 @@ plt.rcParams["axes.linewidth"] = 0.8
 # 1. Top-n Lagerumschlag
 # ---------------------------------------------------------
 def plot_top_umschlag(kpi_df, n=10):
+    """
+    Visualisiert die Artikel mit dem höchsten Lagerumschlag.
+    Speichert das Diagramm im plots/-Ordner.
+    """
+
     df = kpi_df.sort_values("lagerumschlag", ascending=False).head(n)
 
     plt.figure()
@@ -40,6 +48,7 @@ def plot_top_umschlag(kpi_df, n=10):
     ax.set_xlabel("Artikel")
     ax.set_ylabel("Lagerumschlag")
 
+    # Werte oberhalb der Balken anzeigen
     for p in ax.patches:
         ax.annotate(
             f"{p.get_height():.1f}",
@@ -59,6 +68,10 @@ def plot_top_umschlag(kpi_df, n=10):
 # 2. Top-n Durchschnittsbestand
 # ---------------------------------------------------------
 def plot_top_durchschnittsbestand(kpi_df, n=10):
+    """
+    Visualisiert die Artikel mit dem höchsten Durchschnittsbestand.
+    """
+
     df = kpi_df.sort_values("durchschnittsbestand", ascending=False).head(n)
 
     plt.figure()
@@ -92,6 +105,10 @@ def plot_top_durchschnittsbestand(kpi_df, n=10):
 # 3. Top-n Lagerdauer
 # ---------------------------------------------------------
 def plot_top_lagerdauer(kpi_df, n=10):
+    """
+    Visualisiert die Artikel mit der niedrigsten Lagerdauer.
+    """
+
     df = kpi_df.sort_values("lagerdauer", ascending=True).head(n)
 
     plt.figure()
@@ -125,6 +142,10 @@ def plot_top_lagerdauer(kpi_df, n=10):
 # 4. Top-n Engpass-Score
 # ---------------------------------------------------------
 def plot_top_engpass(kpi_df, n=10):
+    """
+    Visualisiert die Artikel mit dem höchsten Engpass-Score.
+    """
+
     df = kpi_df.sort_values("engpass_score", ascending=False).head(n)
 
     plt.figure()
@@ -160,14 +181,9 @@ def plot_top_engpass(kpi_df, n=10):
 def plot_top_umlagerungen(umlagerungen_stats, n=10):
     """
     Visualisiert die Artikel mit den meisten Umlagerungen.
-
-    Parameter:
-        umlagerungen_stats: dict aus umlagerungen_analyse.py
-        n: Anzahl der Artikel
-
-    Speichert:
-        plots/top_{n}_umlagerungen.png
+    Erwartet ein stats-Dictionary aus umlagerungen_analyse.py.
     """
+
     df = umlagerungen_stats["umlagerungen_pro_artikel"].head(n)
 
     if df.empty:
@@ -206,14 +222,9 @@ def plot_top_umlagerungen(umlagerungen_stats, n=10):
 # ---------------------------------------------------------
 def plot_umlagerungsgruende(umlagerungen_stats):
     """
-    Visualisiert die häufigsten Umlagerungsgründe.
-
-    Parameter:
-        umlagerungen_stats: dict aus umlagerungen_analyse.py
-
-    Speichert:
-        plots/umlagerungsgruende.png
+    Visualisiert die häufigsten Gründe für Umlagerungen.
     """
+
     df = umlagerungen_stats["gruende_umlagerungen"]
 
     if df.empty:

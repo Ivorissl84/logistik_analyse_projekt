@@ -25,30 +25,47 @@ def main():
         6. Visualisierungen erzeugen und speichern
     """
 
-    # --- 1. Daten laden ---
+    # ---------------------------------------------------
+    # 1. Daten laden
+    # ---------------------------------------------------
+    # Lädt alle Rohdaten (Bestände, WE, WA, Umlagerungen)
     bestaende, wareneingang, warenausgang, umlagerungen = load_data()
 
-    # --- 2. KPIs berechnen ---
+    # ---------------------------------------------------
+    # 2. KPIs berechnen
+    # ---------------------------------------------------
+    # Rekonstruktion der Monatsbestände + Lagerkennzahlen
     kpi_df = berechne_kpis(bestaende, wareneingang, warenausgang)
 
-    # --- 3. Engpass-Score berechnen ---
+    # ---------------------------------------------------
+    # 3. Engpass-Score berechnen
+    # ---------------------------------------------------
+    # Engpass-Score ergänzt die KPI-Tabelle um Kritikalitätsbewertung
     kpi_df = berechne_engpass_score(kpi_df)
 
-    # --- 4. Top-Engpässe anzeigen ---
+    # ---------------------------------------------------
+    # 4. Top-Engpässe anzeigen
+    # ---------------------------------------------------
     print("\n--- Kritischste Artikel (Top 20) ---")
     print(top_engpaesse(kpi_df, n=20).to_string())
 
-    # --- 5. Umlagerungen analysieren ---
+    # ---------------------------------------------------
+    # 5. Umlagerungen analysieren
+    # ---------------------------------------------------
+    # Liefert Statistiken zu Umlagerungsvolumen, Gründen und Top-Artikeln
     umlagerungen_stats = analyse_umlagerungen(umlagerungen)
     print_umlagerungen_summary(umlagerungen_stats)
 
-    # --- 6. Visualisierungen ---
+    # ---------------------------------------------------
+    # 6. Visualisierungen erzeugen
+    # ---------------------------------------------------
+    # KPI-basierte Diagramme
     plot_top_umschlag(kpi_df)
     plot_top_durchschnittsbestand(kpi_df)
     plot_top_lagerdauer(kpi_df)
     plot_top_engpass(kpi_df)
 
-    # Neue Diagramme für Umlagerungen
+    # Umlagerungsdiagramme
     plot_top_umlagerungen(umlagerungen_stats)
     plot_umlagerungsgruende(umlagerungen_stats)
 

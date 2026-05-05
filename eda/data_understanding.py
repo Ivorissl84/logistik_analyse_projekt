@@ -4,6 +4,7 @@ import pandas as pd
 # ---------------------------------------------------------
 # 0. Pfade korrekt setzen
 # ---------------------------------------------------------
+# BASE_DIR zeigt auf das Projekt-Root, unabhängig vom Startpunkt
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 
@@ -13,6 +14,7 @@ print("Data directory:", DATA_DIR)
 # ---------------------------------------------------------
 # 1. Daten einlesen
 # ---------------------------------------------------------
+# Rohdaten aus dem data/-Ordner laden
 bestaende = pd.read_csv(os.path.join(DATA_DIR, "bestaende.csv"))
 wareneingang = pd.read_csv(os.path.join(DATA_DIR, "wareneingang.csv"))
 warenausgang = pd.read_csv(os.path.join(DATA_DIR, "warenausgang.csv"))
@@ -20,6 +22,7 @@ umlagerungen = pd.read_csv(os.path.join(DATA_DIR, "umlagerungen.csv"))
 
 print("Daten erfolgreich geladen.")
 
+# Alle DataFrames in einem Dictionary sammeln
 datasets = {
     "bestaende": bestaende,
     "wareneingang": wareneingang,
@@ -32,6 +35,7 @@ datasets = {
 # ---------------------------------------------------------
 print("\n--- Grundchecks ---")
 
+# Basisinformationen zu jeder Tabelle ausgeben
 for name, df in datasets.items():
     print(f"\n### {name} ###")
     print("Form:", df.shape)
@@ -54,14 +58,14 @@ for name, df in datasets.items():
         print("Min:", df["datum"].min())
         print("Max:", df["datum"].max())
 
-# Mengen prüfen
+# Mengen prüfen (negative oder Null-Mengen)
 for name, df in datasets.items():
     if "menge" in df.columns:
         print(f"\n{name}: Mengenprüfung")
         print("Negative Mengen:", (df["menge"] < 0).sum())
         print("Null-Mengen:", (df["menge"] == 0).sum())
 
-# Umlagerungen prüfen
+# Umlagerungen prüfen (von_platz != nach_platz)
 if "von_platz" in umlagerungen.columns:
     print("\nUmlagerungen: von != nach")
     print("Fehlerhafte Zeilen:", (umlagerungen["von_platz"] == umlagerungen["nach_platz"]).sum())
@@ -71,6 +75,7 @@ if "von_platz" in umlagerungen.columns:
 # ---------------------------------------------------------
 print("\n--- Verknüpfungschecks ---")
 
+# Artikelmengen pro Tabelle bestimmen
 artikel_bestaende = set(bestaende["artikel"])
 artikel_we = set(wareneingang["artikel"])
 artikel_wa = set(warenausgang["artikel"])
@@ -82,6 +87,7 @@ print("wareneingang:", len(artikel_we))
 print("warenausgang:", len(artikel_wa))
 print("umlagerungen:", len(artikel_um))
 
+# Überschneidungen und Lücken analysieren
 print("\nArtikel NUR im Bestand:", len(artikel_bestaende - (artikel_we | artikel_wa | artikel_um)))
 print("Artikel OHNE Lagerplatz:", len((artikel_we | artikel_wa | artikel_um) - artikel_bestaende))
 print("Artikel in ALLEN Tabellen:", len(artikel_bestaende & artikel_we & artikel_wa & artikel_um))
@@ -112,7 +118,7 @@ if "max_bestand" in bestaende.columns:
 else:
     print("Hinweis: Keine Spalte 'max_bestand' im Bestand vorhanden.")
 
-# Warengruppe nur prüfen, wenn vorhanden
+# Warengruppe prüfen, falls vorhanden
 if "warengruppe" in bestaende.columns:
     fehlende_wg = bestaende["warengruppe"].isna().sum()
     print(f"Warengruppen ohne Zuordnung (sichtbar gelassen): {fehlende_wg}")

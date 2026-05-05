@@ -9,27 +9,32 @@ def berechne_engpass_score(kpi_df):
         Engpass-Score = Lagerumschlag / (Durchschnittsbestand + 1)
 
     Interpretation:
-        - Hoher Score = Artikel hat hohen Verbrauch bei gleichzeitig niedrigem Bestand
+        - Hoher Score = hoher Verbrauch bei gleichzeitig niedrigem Bestand
         - Niedriger Score = Artikel ist weniger kritisch
-        - "+1" verhindert Division durch 0 bei Artikeln ohne Bestand
+        - "+1" verhindert Division durch 0
 
     Parameter:
         kpi_df: DataFrame mit mindestens den Spalten
-                - 'lagerumschlag'
-                - 'durchschnittsbestand'
+                'lagerumschlag' und 'durchschnittsbestand'
 
     Rückgabe:
-        DataFrame mit zusätzlicher Spalte:
-            - 'engpass_score'
+        DataFrame mit zusätzlicher Spalte 'engpass_score'
     """
 
+    # ---------------------------------------------------
+    # 1. DataFrame kopieren, um Original nicht zu verändern
+    # ---------------------------------------------------
     df = kpi_df.copy()
 
-    # Robust gegen fehlende Werte
+    # ---------------------------------------------------
+    # 2. Fehlende Werte robust behandeln
+    # ---------------------------------------------------
     df["lagerumschlag"] = df["lagerumschlag"].fillna(0)
     df["durchschnittsbestand"] = df["durchschnittsbestand"].fillna(0)
 
-    # Engpass-Score berechnen
+    # ---------------------------------------------------
+    # 3. Engpass-Score berechnen
+    # ---------------------------------------------------
     df["engpass_score"] = df["lagerumschlag"] / (df["durchschnittsbestand"] + 1)
 
     return df
@@ -46,4 +51,8 @@ def top_engpaesse(df, n=20):
     Rückgabe:
         DataFrame der Top-n Artikel
     """
+
+    # ---------------------------------------------------
+    # 1. Nach Engpass-Score sortieren und oberste n Zeilen zurückgeben
+    # ---------------------------------------------------
     return df.sort_values("engpass_score", ascending=False).head(n)

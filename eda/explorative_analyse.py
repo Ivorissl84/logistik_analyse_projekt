@@ -4,6 +4,7 @@ import pandas as pd
 # ---------------------------------------------------------
 # 0. Pfade korrekt setzen
 # ---------------------------------------------------------
+# BASE_DIR zeigt auf das Projekt-Root, unabhängig vom Startpunkt
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 
@@ -13,6 +14,7 @@ print("Data directory:", DATA_DIR)
 # ---------------------------------------------------------
 # 1. Daten einlesen
 # ---------------------------------------------------------
+# Rohdaten aus dem data/-Ordner laden
 bestaende = pd.read_csv(os.path.join(DATA_DIR, "bestaende.csv"))
 wareneingang = pd.read_csv(os.path.join(DATA_DIR, "wareneingang.csv"))
 warenausgang = pd.read_csv(os.path.join(DATA_DIR, "warenausgang.csv"))
@@ -23,16 +25,15 @@ print("Daten erfolgreich geladen.")
 # ---------------------------------------------------------
 # 2. Daten vorbereiten
 # ---------------------------------------------------------
-
-# Datum konvertieren
+# Datumsspalten in datetime konvertieren
 for df in [wareneingang, warenausgang, umlagerungen]:
     df["datum"] = pd.to_datetime(df["datum"], format="%Y-%m-%d")
 
-# Spaltennamen vereinheitlichen
+# Spaltennamen vereinheitlichen (Kleinbuchstaben)
 for df in [bestaende, wareneingang, warenausgang, umlagerungen]:
     df.columns = df.columns.str.lower()
 
-# Umlagerungen: Platzspalten vereinheitlichen
+# Umlagerungen: Platzspalten harmonisieren
 umlagerungen.rename(columns={"von_platz": "platz_von", "nach_platz": "platz_nach"}, inplace=True)
 
 # ---------------------------------------------------------
@@ -58,6 +59,7 @@ print(umlagerungen.groupby("artikel")["menge"].sum().sort_values(ascending=False
 # ---------------------------------------------------------
 # 5. Warengruppen-Analysen
 # ---------------------------------------------------------
+# Warengruppen nur analysieren, wenn Spalte vorhanden ist
 if "warengruppe" in wareneingang.columns:
     print("\n--- Warengruppen Eingang ---")
     print(wareneingang.groupby("warengruppe")["menge"].sum())
@@ -79,6 +81,7 @@ else:
 # ---------------------------------------------------------
 # 6. Zeitreihen (Monate)
 # ---------------------------------------------------------
+# Monat aus Datum extrahieren
 wareneingang["monat"] = wareneingang["datum"].dt.month
 warenausgang["monat"] = warenausgang["datum"].dt.month
 umlagerungen["monat"] = umlagerungen["datum"].dt.month
@@ -104,6 +107,7 @@ print(umlagerungen.groupby("platz_nach")["menge"].sum().sort_values(ascending=Fa
 # ---------------------------------------------------------
 # 8. Lieferanten-Analyse
 # ---------------------------------------------------------
+# Lieferanten nur analysieren, wenn Spalte vorhanden ist
 if "lieferant" in wareneingang.columns:
     print("\n--- Top Lieferanten nach Menge ---")
     print(wareneingang.groupby("lieferant")["menge"].sum().sort_values(ascending=False).head())

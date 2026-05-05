@@ -25,15 +25,19 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
     # ---------------------------------------------------------
     # 1. Monate vorbereiten
     # ---------------------------------------------------------
+    # Sicherstellen, dass Bewegungsdaten ein Datumsfeld besitzen
     if "datum" not in wareneingang.columns or "datum" not in warenausgang.columns:
         raise ValueError("wareneingang/warenausgang benötigen eine 'datum'-Spalte.")
 
+    # Monat extrahieren (Periodenformat für Gruppierung)
     wareneingang["monat"] = wareneingang["datum"].dt.to_period("M")
     warenausgang["monat"] = warenausgang["datum"].dt.to_period("M")
 
+    # Monatliche Summen pro Artikel
     eingang_monat = wareneingang.groupby(["artikel", "monat"])["menge"].sum()
     verbrauch_monat = warenausgang.groupby(["artikel", "monat"])["menge"].sum()
 
+    # Alle Artikel, die irgendwo vorkommen
     alle_artikel = (
         set(bestaende["artikel"])
         | set(warenausgang["artikel"])
@@ -45,13 +49,16 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
     # ---------------------------------------------------------
     endbestand_dez = bestaende.groupby("artikel")["bestand"].sum()
 
+    # Alle Monate des Jahres
     monate = pd.period_range(f"{jahr}-01", f"{jahr}-12", freq="M")
 
+    # Struktur für rekonstruierte Monatsbestände
     monatsbestaende = {artikel: {} for artikel in alle_artikel}
 
     # ---------------------------------------------------------
     # 3. Monatsrekonstruktion (rückwärts)
     # ---------------------------------------------------------
+    # Startpunkt: Dezember-Endbestand → rückwärts bis Januar
     for artikel in alle_artikel:
         endbestand = endbestand_dez.get(artikel, 0)
 
@@ -59,15 +66,21 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
             zugang = eingang_monat.get((artikel, monat), 0)
             abgang = verbrauch_monat.get((artikel, monat), 0)
 
+            # Anfangsbestand = Endbestand - Zugang + Abgang
             anfang = endbestand - zugang + abgang
-            if anfang < 0:
-                anfang = 0  # Datenfehler abfangen
 
+            # Negative Bestände abfangen (Datenfehler)
+            if anfang < 0:
+                anfang = 0
+
+            # Endbestand des Monats speichern
             monatsbestaende[artikel][monat] = endbestand
+
+            # Für nächsten Monat rückwärts
             endbestand = anfang
 
     # ---------------------------------------------------------
-    # 4. Durchschnittsbestand
+    # 4. Durchschnittsbestand berechnen
     # ---------------------------------------------------------
     durchschnittsbestand = {
         artikel: sum(monatsbestaende[artikel].values()) / len(monate)
@@ -75,12 +88,12 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
     }
 
     # ---------------------------------------------------------
-    # 5. Jahresverbrauch
+    # 5. Jahresverbrauch berechnen
     # ---------------------------------------------------------
     jahresverbrauch = warenausgang.groupby("artikel")["menge"].sum()
 
     # ---------------------------------------------------------
-    # 6. Lagerumschlag
+    # 6. Lagerumschlag berechnen
     # ---------------------------------------------------------
     lagerumschlag = {
         artikel: (
@@ -91,7 +104,7 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
     }
 
     # ---------------------------------------------------------
-    # 7. Tagesverbrauch
+    # 7. Tagesverbrauch berechnen
     # ---------------------------------------------------------
     tagesverbrauch = {
         artikel: jahresverbrauch.get(artikel, 0) / 365
@@ -99,7 +112,7 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
     }
 
     # ---------------------------------------------------------
-    # 8. Lagerdauer
+    # 8. Lagerdauer berechnen
     # ---------------------------------------------------------
     lagerdauer = {
         artikel: (
@@ -110,7 +123,7 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
     }
 
     # ---------------------------------------------------------
-    # 9. DataFrame bauen
+    # 9. KPI-DataFrame bauen
     # ---------------------------------------------------------
     kpi_df = pd.DataFrame({
         "durchschnittsbestand": pd.Series(durchschnittsbestand),
@@ -118,7 +131,7 @@ def berechne_kpis(bestaende, wareneingang, warenausgang, jahr=2023):
         "lagerdauer": pd.Series(lagerdauer),
     })
 
-    # Sortierung für bessere Lesbarkeit
+    # Für bessere Lesbarkeit nach Lagerumschlag sortieren
     kpi_df = kpi_df.sort_values("lagerumschlag", ascending=False)
 
     return kpi_df
