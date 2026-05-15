@@ -188,7 +188,9 @@ Alle Diagramme werden im Ordner plots/ gespeichert.
 
 Im Projektverzeichnis:
 
+\`\`\`bash
 python main.py
+\`\`\`
 
 ## 🧠 Was dieses Projekt zeigt
 
@@ -202,4 +204,5 @@ python main.py
 ## 👤 Autor
 
 Jan‑Ivo Oelfke  
-Fachkraft für Lagerlogistik auf dem Weg zum Data/Prozess Analyst
+Fachkraft für Lagerlogistik (15+ Jahre Erfahrung)
+Auf dem Weg zum Data & Process Analyst
